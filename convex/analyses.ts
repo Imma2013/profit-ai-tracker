@@ -41,3 +41,27 @@ export const getAnalysis = query({
     return { ...analysis, imageUrl };
   },
 });
+
+export const getUserAnalyses = query({
+  args: { userId: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    if (!args.userId) return [];
+    
+    const analyses = await ctx.db
+      .query("analyses")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId!))
+      .order("desc")
+      .collect();
+      
+    // Fetch image URLs for all analyses
+    return Promise.all(
+      analyses.map(async (analysis) => {
+        let imageUrl = null;
+        if (analysis.storageId) {
+          imageUrl = await ctx.storage.getUrl(analysis.storageId);
+        }
+        return { ...analysis, imageUrl };
+      })
+    );
+  },
+});

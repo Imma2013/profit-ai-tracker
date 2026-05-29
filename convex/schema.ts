@@ -18,5 +18,5 @@ export default defineSchema({
     storageId: v.optional(v.id("_storage")),
     userId: v.string(),
     createdAt: v.number(),
-  }),
+  }).index("by_user", ["userId"]),
 });
