@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     }
 
     // Initialize the model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
     // Construct the prompt
     const prompt = `Analyze this trading chart. Act as an expert crypto/stock trader.
