@@ -1,7 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,12 +10,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// Initialize Firebase only once and only if we have config
 const app = getApps().length === 0 && firebaseConfig.apiKey 
   ? initializeApp(firebaseConfig) 
   : getApps().length > 0 ? getApps()[0] : null;
 
 export const auth = app ? getAuth(app) : null as any;
-export const db = app ? getFirestore(app) : null as any;
-export const storage = app ? getStorage(app) : null as any;
 export const googleProvider = new GoogleAuthProvider();

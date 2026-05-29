@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { db, auth, storage } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { ref, uploadString, getDownloadURL } from "firebase/storage";
+import { auth } from "@/lib/firebase";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function Home() {
   const router = useRouter();
   const [isUploading, setIsUploading] = useState(false);
+  const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
+  const saveAnalysis = useMutation(api.analyses.saveAnalysis);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -35,32 +37,29 @@ export default function Home() {
         
         const analysisData = await response.json();
 
-        // 2. Upload image to Storage (optional, fail gracefully if it doesn't work)
-        let imageUrl = "";
+        // 2. Upload image to Convex Storage
+        let storageId = undefined;
         try {
-          if (storage) {
-            const imageRef = ref(storage, `uploads/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`);
-            await uploadString(imageRef, base64Data, "data_url");
-            imageUrl = await getDownloadURL(imageRef);
-          }
+          const postUrl = await generateUploadUrl();
+          const result = await fetch(postUrl, {
+            method: "POST",
+            headers: { "Content-Type": file.type },
+            body: file,
+          });
+          const { storageId: returnedStorageId } = await result.json();
+          storageId = returnedStorageId;
         } catch (uploadError) {
-          console.error("Storage upload failed, continuing without image URL", uploadError);
+          console.error("Convex storage upload failed", uploadError);
         }
 
-        // 3. Save to Firestore
-        if (db) {
-          const docRef = await addDoc(collection(db, "analyses"), {
-            ...analysisData,
-            imageUrl,
-            userId: auth?.currentUser?.uid || "anonymous",
-            createdAt: serverTimestamp(),
-          });
-          
-          router.push(`/analysis/${docRef.id}`);
-        } else {
-          console.error("Firestore not initialized");
-          setIsUploading(false);
-        }
+        // 3. Save to Convex Database
+        const docId = await saveAnalysis({
+          ...analysisData,
+          storageId,
+          userId: auth?.currentUser?.uid || "anonymous",
+        });
+        
+        router.push(`/analysis/${docId}`);
       };
       
       reader.onerror = (error) => {

@@ -1,35 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
 export default function AnalysisPage() {
   const params = useParams();
   const router = useRouter();
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  
+  const data = useQuery(
+    api.analyses.getAnalysis,
+    params?.id ? { id: params.id as Id<"analyses"> } : "skip"
+  );
 
-  useEffect(() => {
-    async function fetchAnalysis() {
-      if (!params?.id || !db) return;
-      try {
-        const docRef = doc(db, "analyses", params.id as string);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setData(docSnap.data());
-        } else {
-          console.error("No such document!");
-        }
-      } catch (error) {
-        console.error("Error fetching document:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchAnalysis();
-  }, [params?.id]);
+  const loading = data === undefined;
 
   if (loading) {
     return (

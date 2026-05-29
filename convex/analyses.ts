@@ -1,0 +1,38 @@
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+
+export const saveAnalysis = mutation({
+  args: {
+    trend: v.optional(v.string()),
+    signal: v.optional(v.string()),
+    riskLevel: v.optional(v.string()),
+    volume: v.optional(v.string()),
+    supportLevel: v.optional(v.string()),
+    resistanceLevel: v.optional(v.string()),
+    overview: v.optional(v.string()),
+    storageId: v.optional(v.id("_storage")),
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const id = await ctx.db.insert("analyses", {
+      ...args,
+      createdAt: Date.now(),
+    });
+    return id;
+  },
+});
+
+export const getAnalysis = query({
+  args: { id: v.id("analyses") },
+  handler: async (ctx, args) => {
+    const analysis = await ctx.db.get(args.id);
+    if (!analysis) return null;
+    
+    let imageUrl = null;
+    if (analysis.storageId) {
+      imageUrl = await ctx.storage.getUrl(analysis.storageId);
+    }
+    
+    return { ...analysis, imageUrl };
+  },
+});
