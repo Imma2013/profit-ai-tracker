@@ -1,8 +1,54 @@
 "use client";
 
-import Link from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function AnalysisPage() {
+  const params = useParams();
+  const router = useRouter();
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAnalysis() {
+      if (!params?.id || !db) return;
+      try {
+        const docRef = doc(db, "analyses", params.id as string);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setData(docSnap.data());
+        } else {
+          console.error("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAnalysis();
+  }, [params?.id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center space-y-4">
+        <div className="w-12 h-12 border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
+        <p className="text-gray-400">Loading analysis...</p>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center space-y-4">
+        <p className="text-gray-400">Analysis not found.</p>
+        <button onClick={() => router.push("/")} className="text-blue-500 underline">Go Home</button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-black text-white px-5 py-8 max-w-md mx-auto">
       {/* Header */}
@@ -22,9 +68,13 @@ export default function AnalysisPage() {
 
       {/* Thumbnail */}
       <div className="w-full h-24 bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl mb-6 flex items-end p-2 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1000')] bg-cover bg-center mix-blend-overlay"></div>
+        {data.imageUrl ? (
+          <div className="absolute inset-0 bg-cover bg-center mix-blend-overlay" style={{ backgroundImage: `url(${data.imageUrl})`, opacity: 0.4 }}></div>
+        ) : (
+          <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1000')] bg-cover bg-center mix-blend-overlay"></div>
+        )}
         <div className="bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold z-10">
-          Bitcoin
+          Chart
         </div>
       </div>
 
@@ -34,46 +84,46 @@ export default function AnalysisPage() {
         <div className="grid grid-cols-2 gap-3">
           {/* Trend */}
           <div className="bg-[#111111] rounded-2xl p-4 flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-              <span className="text-green-500 text-lg">↗</span>
+            <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
+              <span className="text-gray-300 text-lg">{data.trend === "Bullish" ? "↗" : data.trend === "Bearish" ? "↘" : "→"}</span>
             </div>
             <div>
               <p className="text-xs text-gray-400">Trend</p>
-              <p className="font-semibold text-sm">Bullish</p>
+              <p className="font-semibold text-sm">{data.trend || "Neutral"}</p>
             </div>
           </div>
           {/* Signal */}
           <div className="bg-[#111111] rounded-2xl p-4 flex items-center space-x-3">
             <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
-              <span className="text-gray-400 text-lg">⚠️</span>
+              <span className="text-gray-300 text-lg">⚠️</span>
             </div>
             <div>
               <p className="text-xs text-gray-400">Signal</p>
-              <p className="font-semibold text-sm">Hold</p>
+              <p className="font-semibold text-sm">{data.signal || "Hold"}</p>
             </div>
           </div>
           {/* Risk Level */}
           <div className="bg-[#111111] rounded-2xl p-4 flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
               <div className="flex items-end space-x-0.5 h-4">
-                <div className="w-1 h-2 bg-yellow-500 rounded-sm"></div>
-                <div className="w-1 h-3 bg-yellow-500 rounded-sm"></div>
-                <div className="w-1 h-4 bg-yellow-500 rounded-sm"></div>
+                <div className="w-1 h-2 bg-gray-400 rounded-sm"></div>
+                <div className="w-1 h-3 bg-gray-400 rounded-sm"></div>
+                <div className="w-1 h-4 bg-gray-400 rounded-sm"></div>
               </div>
             </div>
             <div>
               <p className="text-xs text-gray-400">Risk Level</p>
-              <p className="font-semibold text-sm">Medium</p>
+              <p className="font-semibold text-sm">{data.riskLevel || "Medium"}</p>
             </div>
           </div>
           {/* Volume */}
           <div className="bg-[#111111] rounded-2xl p-4 flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-              <span className="text-purple-400 text-lg">~</span>
+            <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
+              <span className="text-gray-300 text-lg">~</span>
             </div>
             <div>
               <p className="text-xs text-gray-400">Volume</p>
-              <p className="font-semibold text-sm">High</p>
+              <p className="font-semibold text-sm">{data.volume || "Unknown"}</p>
             </div>
           </div>
         </div>
@@ -85,11 +135,11 @@ export default function AnalysisPage() {
         <div className="bg-[#111111] rounded-3xl p-4 space-y-3">
           <div className="flex justify-between items-center bg-[#1a1a1a] rounded-2xl px-4 py-3">
             <span className="text-sm text-gray-400">Support Level</span>
-            <span className="font-semibold text-sm">$84,000</span>
+            <span className="font-semibold text-sm">{data.supportLevel || "N/A"}</span>
           </div>
           <div className="flex justify-between items-center bg-[#1a1a1a] rounded-2xl px-4 py-3">
             <span className="text-sm text-gray-400">Resistance Level</span>
-            <span className="font-semibold text-sm">$90,500</span>
+            <span className="font-semibold text-sm">{data.resistanceLevel || "N/A"}</span>
           </div>
         </div>
       </div>
@@ -100,7 +150,7 @@ export default function AnalysisPage() {
         <div className="bg-[#111111] rounded-3xl p-5 space-y-4">
           <div>
             <h3 className="text-sm font-semibold mb-1">Overview</h3>
-            <p className="text-sm text-gray-400">This market is trending upwards with strong support built over the last few sessions.</p>
+            <p className="text-sm text-gray-400">{data.overview || "No overview available for this chart."}</p>
           </div>
           <div className="space-y-2">
             {[
@@ -110,7 +160,7 @@ export default function AnalysisPage() {
               "Technical Indicators",
               "Recognized Patterns"
             ].map((item, i) => (
-              <div key={i} className="flex justify-between items-center py-3 border-b border-gray-800 last:border-0">
+              <div key={i} className="flex justify-between items-center py-3 border-b border-gray-800 last:border-0 opacity-50">
                 <span className="text-sm">{item}</span>
                 <span className="text-gray-500">⌄</span>
               </div>
@@ -121,13 +171,13 @@ export default function AnalysisPage() {
 
       {/* Navigation Bar (Mock) */}
       <div className="fixed bottom-0 left-0 w-full bg-black/80 backdrop-blur-md pb-8 pt-4 px-8 border-t border-gray-900 flex justify-around">
-        <div className="text-gray-400 hover:text-white">🏠</div>
+        <button onClick={() => router.push("/")} className="text-gray-400 hover:text-white">🏠</button>
         <div className="text-white relative">
-          <div className="w-12 h-12 absolute -top-4 -left-3 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+          <button onClick={() => router.push("/")} className="w-12 h-12 absolute -top-4 -left-3 bg-white rounded-2xl flex items-center justify-center shadow-lg">
              <span className="text-black text-xl">📷</span>
-          </div>
+          </button>
         </div>
-        <div className="text-gray-400 hover:text-white">👤</div>
+        <button onClick={() => router.push("/login")} className="text-gray-400 hover:text-white">👤</button>
       </div>
     </div>
   );
