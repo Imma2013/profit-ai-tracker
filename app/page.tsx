@@ -12,7 +12,7 @@ export default function Home() {
   const [userId, setUserId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user: any) => {
       setUserId(user?.uid || "anonymous");
     });
     return () => unsubscribe();
