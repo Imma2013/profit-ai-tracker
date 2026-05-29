@@ -1,9 +1,37 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+
+const AccordionItem = ({ title, content }: { title: string; content?: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="py-3 border-b border-gray-800 last:border-0">
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="w-full flex justify-between items-center text-left opacity-80 hover:opacity-100 transition-opacity"
+      >
+        <span className="text-sm">{title}</span>
+        <span 
+          className="text-gray-500 transition-transform duration-200" 
+          style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        >
+          ⌄
+        </span>
+      </button>
+      <div 
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96 mt-3 opacity-100" : "max-h-0 opacity-0"}`}
+      >
+        <p className="text-sm text-gray-400 leading-relaxed">
+          {content || "No data available."}
+        </p>
+      </div>
+    </div>
+  );
+};
 
 export default function AnalysisPage() {
   const params = useParams();
@@ -137,19 +165,12 @@ export default function AnalysisPage() {
             <h3 className="text-sm font-semibold mb-1">Overview</h3>
             <p className="text-sm text-gray-400">{data.overview || "No overview available for this chart."}</p>
           </div>
-          <div className="space-y-2">
-            {[
-              "Entry & Exit Strategy",
-              "Risk & Reward Assessment",
-              "Trade Duration & Monitoring",
-              "Technical Indicators",
-              "Recognized Patterns"
-            ].map((item, i) => (
-              <div key={i} className="flex justify-between items-center py-3 border-b border-gray-800 last:border-0 opacity-50">
-                <span className="text-sm">{item}</span>
-                <span className="text-gray-500">⌄</span>
-              </div>
-            ))}
+          <div className="space-y-1 mt-2">
+            <AccordionItem title="Entry & Exit Strategy" content={data.entryExitStrategy} />
+            <AccordionItem title="Risk & Reward Assessment" content={data.riskRewardAssessment} />
+            <AccordionItem title="Trade Duration & Monitoring" content={data.tradeDuration} />
+            <AccordionItem title="Technical Indicators" content={data.technicalIndicators} />
+            <AccordionItem title="Recognized Patterns" content={data.recognizedPatterns} />
           </div>
         </div>
       </div>

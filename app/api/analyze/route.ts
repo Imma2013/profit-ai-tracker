@@ -25,7 +25,12 @@ export async function POST(req: Request) {
       "volume": "Low" | "Medium" | "High",
       "supportLevel": "$XX,XXX",
       "resistanceLevel": "$XX,XXX",
-      "overview": "A brief 1-2 sentence overview of the market conditions."
+      "overview": "A brief 1-2 sentence overview of the market conditions.",
+      "entryExitStrategy": "Detailed explanation of entry and exit points.",
+      "riskRewardAssessment": "Detailed risk to reward ratio analysis.",
+      "tradeDuration": "Expected duration for this trade play.",
+      "technicalIndicators": "Key indicators observed (e.g., RSI, MACD).",
+      "recognizedPatterns": "Any chart patterns recognized (e.g., Head and Shoulders)."
     }`;
 
     // Convert base64 to generative part
