@@ -1,7 +1,8 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { auth } from "@/lib/firebase";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -33,10 +34,20 @@ const AccordionItem = ({ title, content }: { title: string; content?: string }) 
   );
 };
 
-export default function AnalysisPage() {
+export default function AnalysisDetail() {
   const params = useParams();
   const router = useRouter();
+  const id = params.id as Id<"analyses">;
   
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user: any) => {
+      setUserId(user?.uid || null);
+    });
+    return () => unsubscribe();
+  }, []);
+
   const data = useQuery(
     api.analyses.getAnalysis,
     params?.id ? { id: params.id as Id<"analyses"> } : "skip"
@@ -183,7 +194,7 @@ export default function AnalysisPage() {
              <span className="text-black text-xl">📷</span>
           </button>
         </div>
-        <button onClick={() => router.push("/login")} className="text-gray-400 hover:text-white">👤</button>
+        <button onClick={() => router.push(userId ? "/profile" : "/login")} className="text-gray-400 hover:text-white">👤</button>
       </div>
     </div>
   );

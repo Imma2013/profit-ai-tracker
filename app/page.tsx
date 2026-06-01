@@ -88,7 +88,7 @@ export default function Home() {
       <div className="flex justify-between items-center mb-8 mt-4">
         <h1 className="text-2xl font-bold">Alu</h1>
         <div 
-          onClick={() => router.push("/login")}
+          onClick={() => router.push(userId && userId !== "anonymous" ? "/profile" : "/login")}
           className="w-10 h-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-xl overflow-hidden cursor-pointer hover:border-gray-500 transition-colors"
         >
            {auth.currentUser?.photoURL ? (
@@ -203,7 +203,7 @@ export default function Home() {
            </label>
          </div>
 
-         <button onClick={() => router.push("/login")} className="text-gray-600 flex flex-col items-center hover:text-gray-300 transition-colors px-4">
+         <button onClick={() => router.push(userId && userId !== "anonymous" ? "/profile" : "/login")} className="text-gray-600 flex flex-col items-center hover:text-gray-300 transition-colors px-4">
            <span className="text-xl mb-1">👤</span>
            <span className="text-[9px] font-bold tracking-widest uppercase">Profile</span>
          </button>
