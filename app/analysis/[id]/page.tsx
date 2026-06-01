@@ -108,11 +108,11 @@ export default function AnalysisPage() {
           {/* Signal */}
           <div className="bg-[#111111] rounded-2xl p-4 flex items-center space-x-3">
             <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
-              <span className="text-gray-300 text-lg">⚠️</span>
+              <span className="text-gray-300 text-lg">🎯</span>
             </div>
             <div>
               <p className="text-xs text-gray-400">Signal</p>
-              <p className="font-semibold text-sm">{data.signal || "Hold"}</p>
+              <p className="font-semibold text-sm">{data.signal || "Buy"}</p>
             </div>
           </div>
           {/* Risk Level */}

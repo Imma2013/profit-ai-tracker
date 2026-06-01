@@ -155,10 +155,10 @@ export default function Home() {
                    
                    {/* Signal Badge */}
                    <div className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase ${
-                     analysis.signal === 'Entry' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
-                     analysis.signal === 'Exit' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                     analysis.signal === 'Buy' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
+                     analysis.signal === 'Sell' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
                    }`}>
-                     {analysis.signal || "HOLD"}
+                     {analysis.signal || "BUY"}
                    </div>
                 </div>
 

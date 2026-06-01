@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     Return ONLY a JSON object with the following structure, and no other markdown or text:
     {
       "trend": "Bullish" | "Bearish" | "Neutral",
-      "signal": "Entry" | "Hold" | "Exit",
+      "signal": "Buy" | "Sell",
       "riskLevel": "Low" | "Medium" | "High",
       "volume": "Low" | "Medium" | "High",
       "supportLevel": "$XX,XXX",
