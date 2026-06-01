@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Profit AI",
+  title: "Alu",
   description: "AI Trading Screenshot Analysis",
 };
 

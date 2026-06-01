@@ -66,7 +66,7 @@ export default function AnalysisPage() {
     <div className="flex flex-col min-h-screen bg-black text-white px-5 py-8 max-w-md mx-auto">
       {/* Header */}
       <div className="flex justify-between items-center mb-6 mt-4">
-        <h1 className="text-2xl font-bold">Profit AI</h1>
+        <h1 className="text-2xl font-bold">Alu</h1>
         <div className="flex space-x-3">
           <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center border border-gray-800">
             <span className="text-sm font-serif italic">i</span>

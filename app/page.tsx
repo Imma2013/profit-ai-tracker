@@ -86,7 +86,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-black text-white px-5 py-8 pb-28">
       {/* Header */}
       <div className="flex justify-between items-center mb-8 mt-4">
-        <h1 className="text-2xl font-bold">Profit AI</h1>
+        <h1 className="text-2xl font-bold">Alu</h1>
         <div 
           onClick={() => router.push("/login")}
           className="w-10 h-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-xl overflow-hidden cursor-pointer hover:border-gray-500 transition-colors"
