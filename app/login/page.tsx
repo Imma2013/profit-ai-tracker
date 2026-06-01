@@ -38,7 +38,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen bg-black text-white px-6 py-12 items-center justify-center">
       <div className="w-full max-w-sm bg-[#111111] rounded-[40px] border border-gray-800 p-8 shadow-2xl">
-        <h1 className="text-3xl font-bold mb-2 text-center">Profit AI</h1>
+        <h1 className="text-3xl font-bold mb-2 text-center">Alu</h1>
         <p className="text-gray-400 text-center mb-8">
           {isSignUp ? "Create an account" : "Welcome back"}
         </p>
