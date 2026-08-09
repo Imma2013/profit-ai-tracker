@@ -11,33 +11,30 @@ import {
   User,
 } from "firebase/auth";
 
-const ONBOARDING_SLIDES = [
-  {
-    title: "Instant Gemini AI Chart Vision",
-    description: "Upload any chart screenshot to receive immediate AI trend detection and trade signals.",
-    image: "/screenshots/Screenshot 2026-05-29 11.04.29 AM.png",
-    tag: "AI ANALYSIS",
-  },
-  {
-    title: "Support, Resistance & Game Plan",
-    description: "Get key target levels, precise entry/exit strategies, and risk-to-reward ratios.",
-    image: "/screenshots/Screenshot 2026-05-29 11.04.50 AM.png",
-    tag: "PRICE TARGETS",
-  },
-  {
-    title: "Automated Buy & Sell Signals",
-    description: "High probability trade setups mapped out instantly with indicator breakdowns.",
-    image: "/screenshots/Screenshot 2026-08-06 4.57.40 PM.png",
-    tag: "SIGNALS & RISK",
-  },
-];
-
 export default function OnboardingPage() {
   const router = useRouter();
-  
-  // Step 1: Feature Intro | Step 2: Authentication (Sign In) | Step 3: Subscription Paywall
-  const [step, setStep] = useState<"intro" | "auth" | "paywall">("intro");
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
+  // Step Index:
+  // 0: Welcome Splash
+  // 1: Tagline ("Your next winning trade starts with a photo")
+  // 2: Feature 1 ("Just snap a pic of your chart")
+  // 3: Feature 2 ("And get money making insights")
+  // 4: Q1 Experience ("What's your trading experience?")
+  // 5: Q2 Market ("Which market do you primarily trade in?")
+  // 6: Q3 Style ("What's your trading style?")
+  // 7: Q4 Detail ("How detailed should the analysis be?")
+  // 8: Profitability Promise ("You are just few steps away from becoming a profitable trader")
+  // 9: Personalizing Loader ("Personalizing Profit AI...")
+  // 10: Transform Summary ("Transform your trading journey!")
+  // 11: Sign In / Account Creation
+  // 12: Enforced Payment Paywall ($29.99/yr 3-day trial & $7.99/wk)
+  const [step, setStep] = useState<number>(0);
+
+  // User selections
+  const [experience, setExperience] = useState<string>("Beginner 🐥");
+  const [market, setMarket] = useState<string>("Crypto 🔗");
+  const [style, setStyle] = useState<string>("Long-Term Investing 👨‍🌾");
+  const [detailLevel, setDetailLevel] = useState<string>("Advanced 🚀");
 
   // Auth state
   const [user, setUser] = useState<User | null>(null);
@@ -54,23 +51,39 @@ export default function OnboardingPage() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      if (currentUser && step === "auth") {
+      if (currentUser && step === 11) {
         // Automatically move to paywall once signed in!
-        setStep("paywall");
+        setStep(12);
       }
     });
     return () => unsubscribe();
   }, [step]);
 
-  const handleNextFromIntro = () => {
-    if (currentSlideIndex < ONBOARDING_SLIDES.length - 1) {
-      setCurrentSlideIndex((prev) => prev + 1);
-    } else {
+  // Handle personalizing loading animation timer (Step 9)
+  useEffect(() => {
+    if (step === 9) {
+      const timer = setTimeout(() => {
+        setStep(10);
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
+
+  const handleNext = () => {
+    if (step === 10) {
       if (user) {
-        setStep("paywall");
+        setStep(12);
       } else {
-        setStep("auth");
+        setStep(11);
       }
+    } else {
+      setStep((prev) => prev + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (step > 0 && step !== 9 && step !== 10) {
+      setStep((prev) => prev - 1);
     }
   };
 
@@ -80,7 +93,7 @@ export default function OnboardingPage() {
     try {
       const res = await signInWithPopup(auth, googleProvider);
       setUser(res.user);
-      setStep("paywall");
+      setStep(12);
     } catch (err: any) {
       setAuthError(err.message || "Failed to sign in with Google");
     } finally {
@@ -100,7 +113,7 @@ export default function OnboardingPage() {
         res = await signInWithEmailAndPassword(auth, email, password);
       }
       setUser(res.user);
-      setStep("paywall");
+      setStep(12);
     } catch (err: any) {
       setAuthError(err.message || "Authentication failed");
     } finally {
@@ -135,76 +148,432 @@ export default function OnboardingPage() {
     }
   };
 
-  const currentSlide = ONBOARDING_SLIDES[currentSlideIndex];
-
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white px-6 py-8 justify-between max-w-md mx-auto relative overflow-hidden">
-      {/* Step Progress Indicator */}
-      <div className="flex items-center space-x-2 pt-4 px-2">
-        <div className={`h-1.5 flex-1 rounded-full transition-colors ${step === "intro" ? "bg-white" : "bg-gray-700"}`} />
-        <div className={`h-1.5 flex-1 rounded-full transition-colors ${step === "auth" ? "bg-white" : "bg-gray-700"}`} />
-        <div className={`h-1.5 flex-1 rounded-full transition-colors ${step === "paywall" ? "bg-white" : "bg-gray-700"}`} />
-      </div>
+    <div className="flex flex-col min-h-screen bg-black text-white px-6 py-6 justify-between max-w-md mx-auto relative overflow-hidden font-sans select-none">
+      {/* Top Header Navigation (for questions & detail steps) */}
+      {step > 0 && step < 11 && step !== 9 && (
+        <div className="flex items-center justify-between pt-2 pb-4">
+          <button
+            onClick={handleBack}
+            className="w-9 h-9 rounded-full bg-[#161616] border border-gray-800 flex items-center justify-center text-gray-300 hover:text-white"
+          >
+            ←
+          </button>
+          
+          {/* Progress bar line */}
+          <div className="flex-1 mx-4 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-white transition-all duration-300"
+              style={{ width: `${(step / 11) * 100}%` }}
+            />
+          </div>
+          
+          <div className="w-9" />
+        </div>
+      )}
 
-      {/* STEP 1: LANDING / FEATURE INTRO SLIDES WITH SCREENSHOTS */}
-      {step === "intro" && (
+      {/* STEP 0: WELCOME SPLASH */}
+      {step === 0 && (
+        <div
+          onClick={() => setStep(1)}
+          className="flex-1 flex flex-col items-center justify-center text-center cursor-pointer animate-fadeIn py-12"
+        >
+          <div className="space-y-4">
+            <h1 className="text-4xl font-extrabold tracking-tight">
+              Welcome to <br />
+              <span className="text-white">Profit AI!</span>
+            </h1>
+          </div>
+          <p className="text-gray-500 text-xs mt-16 animate-pulse">Tap anywhere to continue</p>
+        </div>
+      )}
+
+      {/* STEP 1: TAGLINE */}
+      {step === 1 && (
         <div className="flex-1 flex flex-col justify-between my-6 animate-fadeIn">
-          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4">
-            {/* Slide Tag */}
-            <div className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-[10px] font-bold uppercase tracking-widest">
-              {currentSlide.tag}
+          <div className="flex-1 flex flex-col justify-center items-start px-2 space-y-6">
+            <div className="w-12 h-12 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-center text-2xl">
+              📈
             </div>
-
-            {/* Title & Description */}
-            <div className="space-y-2">
-              <h1 className="text-2xl font-extrabold tracking-tight">
-                {currentSlide.title}
-              </h1>
-              <p className="text-gray-400 text-xs leading-relaxed px-4">
-                {currentSlide.description}
-              </p>
-            </div>
-
-            {/* Screenshot Preview Card */}
-            <div className="w-full h-72 rounded-3xl bg-[#111111] border border-gray-800 p-2 overflow-hidden shadow-2xl relative flex items-center justify-center my-2">
-              <img
-                src={currentSlide.image}
-                alt={currentSlide.title}
-                className="w-full h-full object-cover object-top rounded-2xl opacity-90 border border-gray-900"
-                onError={(e) => {
-                  // Fallback icon if image path changes
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
-
-            {/* Carousel Dots */}
-            <div className="flex items-center justify-center space-x-2 pt-2">
-              {ONBOARDING_SLIDES.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSlideIndex(idx)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all ${
-                    idx === currentSlideIndex ? "bg-green-400 w-6" : "bg-gray-700"
-                  }`}
-                />
-              ))}
-            </div>
+            <h1 className="text-3xl font-extrabold tracking-tight leading-tight">
+              Your next winning trade starts with a photo.
+            </h1>
           </div>
 
-          <div className="space-y-3 pt-4">
+          <div className="space-y-4">
             <button
-              onClick={handleNextFromIntro}
+              onClick={handleNext}
               className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
             >
-              {currentSlideIndex < ONBOARDING_SLIDES.length - 1 ? "Next" : "Get Started"}
+              Continue
             </button>
+            <p className="text-center text-[10px] text-gray-600">
+              Privacy Policy | Terms Of Use
+            </p>
           </div>
         </div>
       )}
 
-      {/* STEP 2: SIGN IN / SIGN UP (BEFORE PAYWALL) */}
-      {step === "auth" && (
+      {/* STEP 2: FEATURE 1 (JUST SNAP A PIC OF YOUR CHART) */}
+      {step === 2 && (
+        <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
+          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4">
+            <h2 className="text-2xl font-extrabold">Just snap a pic of your chart</h2>
+            
+            {/* Viewfinder Mockup */}
+            <div className="relative w-full max-w-[260px] aspect-[9/16] bg-[#111111] rounded-[36px] border border-gray-800 flex flex-col items-center justify-center overflow-hidden shadow-2xl my-2">
+              <div className="absolute inset-0 m-8 border-2 border-white/20 rounded-2xl pointer-events-none flex items-center justify-center">
+                <div className="w-10 h-10 border-t-2 border-l-2 border-white absolute top-0 left-0 -translate-x-1 -translate-y-1 rounded-tl-lg" />
+                <div className="w-10 h-10 border-t-2 border-r-2 border-white absolute top-0 right-0 translate-x-1 -translate-y-1 rounded-tr-lg" />
+                <div className="w-10 h-10 border-b-2 border-l-2 border-white absolute bottom-0 left-0 -translate-x-1 translate-y-1 rounded-bl-lg" />
+                <div className="w-10 h-10 border-b-2 border-r-2 border-white absolute bottom-0 right-0 translate-x-1 translate-y-1 rounded-br-lg" />
+              </div>
+              <div className="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center opacity-80">
+                <div className="w-10 h-10 rounded-full bg-white" />
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* STEP 3: FEATURE 2 (AND GET MONEY MAKING INSIGHTS) */}
+      {step === 3 && (
+        <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
+          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4">
+            <h2 className="text-2xl font-extrabold">And get money making insights</h2>
+            
+            {/* Insights Card Mockup */}
+            <div className="w-full bg-[#111111] rounded-[32px] border border-gray-800 p-5 space-y-4 text-left shadow-2xl">
+              <div className="flex items-center space-x-2 border-b border-gray-800/60 pb-3">
+                <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold">
+                  ↗
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm">Profit AI</h3>
+                  <p className="text-[10px] text-gray-400">Bitcoin Analysis</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-[#1a1a1a] p-3 rounded-xl">
+                  <span className="text-gray-500 text-[10px]">Trend</span>
+                  <p className="font-bold text-green-400">↗ Bullish</p>
+                </div>
+                <div className="bg-[#1a1a1a] p-3 rounded-xl">
+                  <span className="text-gray-500 text-[10px]">Signal</span>
+                  <p className="font-bold text-green-400">Buy Entry</p>
+                </div>
+                <div className="bg-[#1a1a1a] p-3 rounded-xl">
+                  <span className="text-gray-500 text-[10px]">Risk Level</span>
+                  <p className="font-bold text-yellow-400">Medium</p>
+                </div>
+                <div className="bg-[#1a1a1a] p-3 rounded-xl">
+                  <span className="text-gray-500 text-[10px]">Volume</span>
+                  <p className="font-bold text-purple-400">High</p>
+                </div>
+              </div>
+
+              <div className="bg-[#1a1a1a] p-3 rounded-xl text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Support Level</span>
+                  <span className="font-bold">$84,000</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Resistance Level</span>
+                  <span className="font-bold">$90,500</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* STEP 4: QUESTION 1 (TRADING EXPERIENCE) */}
+      {step === 4 && (
+        <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-extrabold text-left pt-2">
+              What's your trading experience?
+            </h2>
+
+            <div className="space-y-3 pt-2">
+              {[
+                { label: "Beginner 🐥", val: "Beginner 🐥" },
+                { label: "Intermediate 🧠", val: "Intermediate 🧠" },
+                { label: "Expert 🚀", val: "Expert 🚀" },
+              ].map((opt) => (
+                <button
+                  key={opt.val}
+                  onClick={() => setExperience(opt.val)}
+                  className={`w-full text-left p-4 rounded-2xl border text-sm font-semibold transition-all ${
+                    experience === opt.val
+                      ? "bg-[#1f1f1f] border-white text-white shadow-lg"
+                      : "bg-[#111111] border-gray-800/80 text-gray-300 hover:border-gray-700"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* STEP 5: QUESTION 2 (MARKET) */}
+      {step === 5 && (
+        <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-extrabold text-left pt-2">
+              Which market do you primarily trade in?
+            </h2>
+
+            <div className="space-y-3 pt-2">
+              {[
+                { label: "Stocks 🏦", val: "Stocks 🏦" },
+                { label: "Crypto 🔗", val: "Crypto 🔗" },
+                { label: "Forex 💵", val: "Forex 💵" },
+                { label: "Futures ⏳", val: "Futures ⏳" },
+                { label: "Other", val: "Other" },
+              ].map((opt) => (
+                <button
+                  key={opt.val}
+                  onClick={() => setMarket(opt.val)}
+                  className={`w-full text-left p-4 rounded-2xl border text-sm font-semibold transition-all ${
+                    market === opt.val
+                      ? "bg-[#1f1f1f] border-white text-white shadow-lg"
+                      : "bg-[#111111] border-gray-800/80 text-gray-300 hover:border-gray-700"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* STEP 6: QUESTION 3 (TRADING STYLE) */}
+      {step === 6 && (
+        <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-extrabold text-left pt-2">
+              What's your trading style?
+            </h2>
+
+            <div className="space-y-3 pt-2">
+              {[
+                { label: "Scalping ⚡", sub: "Very short-term trades, minutes to hours", val: "Scalping ⚡" },
+                { label: "Day Trading 🌅", sub: "Buying and selling within the same day", val: "Day Trading 🌅" },
+                { label: "Swing Trading 🎯", sub: "Holding position for days or weeks", val: "Swing Trading 🎯" },
+                { label: "Long-Term Investing 👨‍🌾", sub: "Holding position for months or years", val: "Long-Term Investing 👨‍🌾" },
+                { label: "Not sure yet", sub: "", val: "Not sure yet" },
+              ].map((opt) => (
+                <button
+                  key={opt.val}
+                  onClick={() => setStyle(opt.val)}
+                  className={`w-full text-left p-4 rounded-2xl border transition-all ${
+                    style === opt.val
+                      ? "bg-[#1f1f1f] border-white text-white shadow-lg"
+                      : "bg-[#111111] border-gray-800/80 text-gray-300 hover:border-gray-700"
+                  }`}
+                >
+                  <p className="font-semibold text-sm">{opt.label}</p>
+                  {opt.sub && <p className="text-[11px] text-gray-500 mt-0.5">{opt.sub}</p>}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* STEP 7: QUESTION 4 (ANALYSIS DEPTH) */}
+      {step === 7 && (
+        <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-extrabold text-left pt-2">
+              How detailed should the analysis be?
+            </h2>
+
+            <div className="space-y-3 pt-2">
+              {[
+                { label: "Simple 💡", val: "Simple 💡" },
+                { label: "Intermediate 📖", val: "Intermediate 📖" },
+                { label: "Advanced 🚀", val: "Advanced 🚀" },
+              ].map((opt) => (
+                <button
+                  key={opt.val}
+                  onClick={() => setDetailLevel(opt.val)}
+                  className={`w-full text-left p-4 rounded-2xl border text-sm font-semibold transition-all ${
+                    detailLevel === opt.val
+                      ? "bg-[#1f1f1f] border-white text-white shadow-lg"
+                      : "bg-[#111111] border-gray-800/80 text-gray-300 hover:border-gray-700"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* STEP 8: PROFITABILITY PROMISE */}
+      {step === 8 && (
+        <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
+          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6">
+            <h2 className="text-2xl font-extrabold px-2">
+              You are just few steps away from becoming a profitable trader
+            </h2>
+
+            {/* Profitability Graph Card */}
+            <div className="w-full bg-[#111111] rounded-3xl p-5 border border-gray-800 shadow-2xl space-y-4 text-left">
+              <h3 className="font-bold text-sm">Your Profitability</h3>
+              
+              <div className="flex space-x-4 text-[10px]">
+                <div className="flex items-center space-x-1.5">
+                  <div className="w-2 h-2 rounded-full bg-green-500" />
+                  <span className="text-gray-300 font-semibold">Profit AI</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <div className="w-2 h-2 rounded-full bg-red-500" />
+                  <span className="text-gray-400">Trading Gurus</span>
+                </div>
+              </div>
+
+              {/* SVG Line Graph */}
+              <div className="h-32 w-full relative pt-2">
+                <svg className="w-full h-full overflow-visible" viewBox="0 0 100 50" preserveAspectRatio="none">
+                  {/* Grid Lines */}
+                  <line x1="0" y1="25" x2="100" y2="25" stroke="#222" strokeDasharray="2" />
+                  <line x1="0" y1="45" x2="100" y2="45" stroke="#222" />
+
+                  {/* Red Line (Trading Gurus - wavy down) */}
+                  <path
+                    d="M 0 30 Q 25 10 50 35 T 100 40"
+                    fill="none"
+                    stroke="#ef4444"
+                    strokeWidth="2.5"
+                  />
+
+                  {/* Green Line (Profit AI - upward) */}
+                  <path
+                    d="M 0 35 Q 35 35 65 20 T 100 5"
+                    fill="none"
+                    stroke="#22c55e"
+                    strokeWidth="3"
+                  />
+                  <circle cx="100" cy="5" r="3" fill="#22c55e" />
+                </svg>
+              </div>
+
+              <p className="text-center text-[10px] text-gray-500 font-medium">
+                80% of Profit AI users achieve long-term profitability.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* STEP 9: PERSONALIZING LOADER */}
+      {step === 9 && (
+        <div className="flex-1 flex flex-col items-center justify-center text-center animate-fadeIn my-12">
+          <div className="bg-[#111111] rounded-3xl p-8 border border-gray-800 flex flex-col items-center justify-center space-y-4 shadow-2xl">
+            <div className="w-10 h-10 border-4 border-gray-700 border-t-white rounded-full animate-spin" />
+            <p className="font-semibold text-sm text-gray-200 tracking-wide">
+              Personalizing Profit AI <span className="animate-pulse">...</span>
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 10: TRANSFORM SUMMARY */}
+      {step === 10 && (
+        <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
+          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6">
+            <h2 className="text-3xl font-extrabold px-2">
+              Transform your trading journey!
+            </h2>
+
+            <div className="w-full bg-[#111111] rounded-3xl p-6 border border-gray-800 space-y-4 text-left shadow-2xl">
+              <div className="flex items-center space-x-3 text-sm">
+                <span className="text-xl">📸</span>
+                <span className="font-semibold">Snap & Analyze Instantly</span>
+              </div>
+              <div className="flex items-center space-x-3 text-sm">
+                <span className="text-xl">📈</span>
+                <span className="font-semibold">Understand Key Market Trends</span>
+              </div>
+              <div className="flex items-center space-x-3 text-sm">
+                <span className="text-xl">💡</span>
+                <span className="font-semibold">Get Actionable Insights</span>
+              </div>
+              <div className="flex items-center space-x-3 text-sm">
+                <span className="text-xl">⭐</span>
+                <span className="font-semibold">Start Trading Like a Pro</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={handleNext}
+            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* STEP 11: SIGN IN / CREATE ACCOUNT */}
+      {step === 11 && (
         <div className="flex-1 flex flex-col justify-between my-6 animate-fadeIn">
           <div className="flex-1 flex flex-col justify-center space-y-6">
             <div className="text-center space-y-2">
@@ -293,8 +662,8 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {/* STEP 3: SUBSCRIPTION PAYWALL (ENFORCED PLAN SELECTION WITHOUT SKIP BYPASS) */}
-      {step === "paywall" && (
+      {/* STEP 12: ENFORCED PAYMENT PAYWALL */}
+      {step === 12 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="space-y-6">
             <div className="text-center space-y-2 pt-2">
