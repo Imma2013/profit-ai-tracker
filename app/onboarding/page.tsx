@@ -11,12 +11,34 @@ import {
   User,
 } from "firebase/auth";
 
+const ONBOARDING_SLIDES = [
+  {
+    title: "Instant Gemini AI Chart Vision",
+    description: "Upload any chart screenshot to receive immediate AI trend detection and trade signals.",
+    image: "/screenshots/Screenshot 2026-05-29 11.04.29 AM.png",
+    tag: "AI ANALYSIS",
+  },
+  {
+    title: "Support, Resistance & Game Plan",
+    description: "Get key target levels, precise entry/exit strategies, and risk-to-reward ratios.",
+    image: "/screenshots/Screenshot 2026-05-29 11.04.50 AM.png",
+    tag: "PRICE TARGETS",
+  },
+  {
+    title: "Automated Buy & Sell Signals",
+    description: "High probability trade setups mapped out instantly with indicator breakdowns.",
+    image: "/screenshots/Screenshot 2026-08-06 4.57.40 PM.png",
+    tag: "SIGNALS & RISK",
+  },
+];
+
 export default function OnboardingPage() {
   const router = useRouter();
   
   // Step 1: Feature Intro | Step 2: Authentication (Sign In) | Step 3: Subscription Paywall
   const [step, setStep] = useState<"intro" | "auth" | "paywall">("intro");
-  
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
   // Auth state
   const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState("");
@@ -41,10 +63,14 @@ export default function OnboardingPage() {
   }, [step]);
 
   const handleNextFromIntro = () => {
-    if (user) {
-      setStep("paywall");
+    if (currentSlideIndex < ONBOARDING_SLIDES.length - 1) {
+      setCurrentSlideIndex((prev) => prev + 1);
     } else {
-      setStep("auth");
+      if (user) {
+        setStep("paywall");
+      } else {
+        setStep("auth");
+      }
     }
   };
 
@@ -99,7 +125,6 @@ export default function OnboardingPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        // If Stripe checkout URL is not configured yet, continue to app
         router.push("/");
       }
     } catch (err) {
@@ -110,6 +135,8 @@ export default function OnboardingPage() {
     }
   };
 
+  const currentSlide = ONBOARDING_SLIDES[currentSlideIndex];
+
   return (
     <div className="flex flex-col min-h-screen bg-black text-white px-6 py-8 justify-between max-w-md mx-auto relative overflow-hidden">
       {/* Step Progress Indicator */}
@@ -119,45 +146,60 @@ export default function OnboardingPage() {
         <div className={`h-1.5 flex-1 rounded-full transition-colors ${step === "paywall" ? "bg-white" : "bg-gray-700"}`} />
       </div>
 
-      {/* STEP 1: LANDING / FEATURE INTRO */}
+      {/* STEP 1: LANDING / FEATURE INTRO SLIDES WITH SCREENSHOTS */}
       {step === "intro" && (
-        <div className="flex-1 flex flex-col justify-between my-8 animate-fadeIn">
-          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6">
-            <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-green-500/20 to-emerald-400/20 border border-green-500/30 flex items-center justify-center text-5xl shadow-[0_0_50px_rgba(34,197,94,0.2)]">
-              📈
+        <div className="flex-1 flex flex-col justify-between my-6 animate-fadeIn">
+          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4">
+            {/* Slide Tag */}
+            <div className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-[10px] font-bold uppercase tracking-widest">
+              {currentSlide.tag}
             </div>
-            
-            <div className="space-y-3">
-              <h1 className="text-3xl font-extrabold tracking-tight">
-                Master the Charts with <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">Profit AI</span>
+
+            {/* Title & Description */}
+            <div className="space-y-2">
+              <h1 className="text-2xl font-extrabold tracking-tight">
+                {currentSlide.title}
               </h1>
-              <p className="text-gray-400 text-sm leading-relaxed px-4">
-                Instant AI trading analysis, support & resistance levels, and high-probability entry & exit strategies directly from your chart screenshots.
+              <p className="text-gray-400 text-xs leading-relaxed px-4">
+                {currentSlide.description}
               </p>
             </div>
 
-            <div className="w-full bg-[#111111] rounded-2xl p-4 border border-gray-800 text-left space-y-3">
-              <div className="flex items-center space-x-3 text-sm">
-                <span className="text-green-400 font-bold">✓</span>
-                <span className="text-gray-300">Gemini-powered chart vision engine</span>
-              </div>
-              <div className="flex items-center space-x-3 text-sm">
-                <span className="text-green-400 font-bold">✓</span>
-                <span className="text-gray-300">Automated Buy/Sell risk signals</span>
-              </div>
-              <div className="flex items-center space-x-3 text-sm">
-                <span className="text-green-400 font-bold">✓</span>
-                <span className="text-gray-300">Support & Resistance price target mapping</span>
-              </div>
+            {/* Screenshot Preview Card */}
+            <div className="w-full h-72 rounded-3xl bg-[#111111] border border-gray-800 p-2 overflow-hidden shadow-2xl relative flex items-center justify-center my-2">
+              <img
+                src={currentSlide.image}
+                alt={currentSlide.title}
+                className="w-full h-full object-cover object-top rounded-2xl opacity-90 border border-gray-900"
+                onError={(e) => {
+                  // Fallback icon if image path changes
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </div>
+
+            {/* Carousel Dots */}
+            <div className="flex items-center justify-center space-x-2 pt-2">
+              {ONBOARDING_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlideIndex(idx)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    idx === currentSlideIndex ? "bg-green-400 w-6" : "bg-gray-700"
+                  }`}
+                />
+              ))}
             </div>
           </div>
 
-          <button
-            onClick={handleNextFromIntro}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
-          >
-            Get Started
-          </button>
+          <div className="space-y-3 pt-4">
+            <button
+              onClick={handleNextFromIntro}
+              className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            >
+              {currentSlideIndex < ONBOARDING_SLIDES.length - 1 ? "Next" : "Get Started"}
+            </button>
+          </div>
         </div>
       )}
 
@@ -251,7 +293,7 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {/* STEP 3: SUBSCRIPTION PAYWALL (YEARLY PLAN: $29.99/yr WITH 3-DAY FREE TRIAL | WEEKLY: $7.99/wk) */}
+      {/* STEP 3: SUBSCRIPTION PAYWALL (ENFORCED PLAN SELECTION WITHOUT SKIP BYPASS) */}
       {step === "paywall" && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="space-y-6">
@@ -336,7 +378,7 @@ export default function OnboardingPage() {
             </div>
           </div>
 
-          <div className="space-y-3 pt-4">
+          <div className="pt-4">
             <button
               onClick={handleSubscribe}
               disabled={checkoutLoading}
@@ -349,13 +391,6 @@ export default function OnboardingPage() {
               ) : (
                 <span>Subscribe Weekly ($7.99)</span>
               )}
-            </button>
-
-            <button
-              onClick={() => router.push("/")}
-              className="w-full text-center text-xs text-gray-500 hover:text-gray-300 py-1"
-            >
-              Skip for now
             </button>
           </div>
         </div>
