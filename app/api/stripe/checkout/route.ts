@@ -11,21 +11,21 @@ export async function POST(req: Request) {
 
     const isYearly = planType === "yearly";
 
-    // Build line items using priceId or Stripe environment variables
+    // Build line items using priceId or Stripe fallback parameters
     const lineItem = priceId
       ? { price: priceId, quantity: 1 }
       : {
           price_data: {
             currency: "usd",
             product_data: {
-              name: isYearly ? "Profit AI Pro (Yearly - 3 Day Free Trial)" : "Profit AI Pro (Monthly)",
+              name: isYearly ? "Profit AI Pro (Yearly - 3 Day Free Trial)" : "Profit AI Pro (Weekly)",
               description: isYearly
-                ? "Full access to AI Trading Chart Analysis with 3-day free trial"
-                : "Full access to AI Trading Chart Analysis",
+                ? "Full access to AI Trading Chart Analysis ($29.99/yr after 3-day free trial)"
+                : "Full access to AI Trading Chart Analysis ($7.99/week)",
             },
-            unit_amount: isYearly ? 5999 : 999, // $59.99/yr or $9.99/mo
+            unit_amount: isYearly ? 2999 : 799, // $29.99/yr or $7.99/wk
             recurring: {
-              interval: isYearly ? ("year" as const) : ("month" as const),
+              interval: isYearly ? ("year" as const) : ("week" as const),
             },
           },
           quantity: 1,

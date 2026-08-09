@@ -26,7 +26,7 @@ export default function OnboardingPage() {
   const [authLoading, setAuthLoading] = useState(false);
 
   // Paywall plan selection ('yearly' has 3-day trial)
-  const [selectedPlan, setSelectedPlan] = useState<"yearly" | "monthly">("yearly");
+  const [selectedPlan, setSelectedPlan] = useState<"yearly" | "weekly">("yearly");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function OnboardingPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        // If Stripe keys aren't set up yet, allow proceeding to main app
+        // If Stripe checkout URL is not configured yet, continue to app
         router.push("/");
       }
     } catch (err) {
@@ -119,7 +119,7 @@ export default function OnboardingPage() {
         <div className={`h-1.5 flex-1 rounded-full transition-colors ${step === "paywall" ? "bg-white" : "bg-gray-700"}`} />
       </div>
 
-      {/* STEP 1: FEATURE INTRO */}
+      {/* STEP 1: LANDING / FEATURE INTRO */}
       {step === "intro" && (
         <div className="flex-1 flex flex-col justify-between my-8 animate-fadeIn">
           <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6">
@@ -251,7 +251,7 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {/* STEP 3: SUBSCRIPTION PAYWALL (YEARLY PLAN INCLUDES 3-DAY FREE TRIAL) */}
+      {/* STEP 3: SUBSCRIPTION PAYWALL (YEARLY PLAN: $29.99/yr WITH 3-DAY FREE TRIAL | WEEKLY: $7.99/wk) */}
       {step === "paywall" && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="space-y-6">
@@ -267,7 +267,7 @@ export default function OnboardingPage() {
 
             {/* Plans Selection */}
             <div className="space-y-4">
-              {/* Yearly Plan with 3-DAY FREE TRIAL */}
+              {/* Yearly Plan: $29.99/yr with 3-DAY FREE TRIAL ($2.49/mo) */}
               <div
                 onClick={() => setSelectedPlan("yearly")}
                 className={`relative rounded-3xl p-5 border-2 cursor-pointer transition-all ${
@@ -284,36 +284,36 @@ export default function OnboardingPage() {
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <h3 className="font-bold text-lg text-white">Yearly Plan</h3>
-                    <p className="text-green-400 text-xs font-semibold">3 Days Free, then $59.99/year</p>
+                    <p className="text-green-400 text-xs font-semibold">3 Days Free, then $29.99/year</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-extrabold text-white">$4.99</span>
+                    <span className="text-2xl font-extrabold text-white">$2.49</span>
                     <span className="text-xs text-gray-400"> /mo</span>
                   </div>
                 </div>
 
                 <p className="text-gray-400 text-xs">
-                  Billed annually ($59.99/yr) after 3 days. Save 50% compared to monthly.
+                  Billed annually ($29.99/yr) after 3 days. Save 70% compared to weekly.
                 </p>
               </div>
 
-              {/* Monthly Plan */}
+              {/* Weekly Plan: $7.99/wk */}
               <div
-                onClick={() => setSelectedPlan("monthly")}
+                onClick={() => setSelectedPlan("weekly")}
                 className={`rounded-3xl p-5 border-2 cursor-pointer transition-all ${
-                  selectedPlan === "monthly"
+                  selectedPlan === "weekly"
                     ? "bg-gradient-to-b from-[#1c1c1c] to-[#121212] border-gray-400"
                     : "bg-[#111111] border-gray-800 hover:border-gray-700"
                 }`}
               >
                 <div className="flex justify-between items-start mb-1">
                   <div>
-                    <h3 className="font-bold text-lg text-white">Monthly Plan</h3>
-                    <p className="text-gray-400 text-xs">Standard monthly access</p>
+                    <h3 className="font-bold text-lg text-white">Weekly Plan</h3>
+                    <p className="text-gray-400 text-xs">Standard weekly access</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-extrabold text-white">$9.99</span>
-                    <span className="text-xs text-gray-400"> /mo</span>
+                    <span className="text-2xl font-extrabold text-white">$7.99</span>
+                    <span className="text-xs text-gray-400"> /wk</span>
                   </div>
                 </div>
               </div>
@@ -327,7 +327,7 @@ export default function OnboardingPage() {
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-green-400 font-bold">⚡</span>
-                <span>Real-time Support & Resistance Target Alerts</span>
+                <span>Real-time Support & Resistance Target Mapping</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-green-400 font-bold">⚡</span>
@@ -347,7 +347,7 @@ export default function OnboardingPage() {
               ) : selectedPlan === "yearly" ? (
                 <span>START 3-DAY FREE TRIAL</span>
               ) : (
-                <span>Subscribe Monthly ($9.99)</span>
+                <span>Subscribe Weekly ($7.99)</span>
               )}
             </button>
 

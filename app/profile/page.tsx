@@ -15,7 +15,7 @@ export default function ProfilePage() {
       if (currentUser) {
         setUser(currentUser);
       } else {
-        router.push("/login");
+        router.push("/onboarding");
       }
       setLoading(false);
     });
@@ -26,7 +26,7 @@ export default function ProfilePage() {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      router.push("/");
+      router.push("/onboarding");
     } catch (error) {
       console.error("Error signing out:", error);
     }
