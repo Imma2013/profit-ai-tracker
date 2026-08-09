@@ -63,7 +63,14 @@ export default function ProfilePage() {
         </div>
         
         <h2 className="text-xl font-bold mb-1">{user?.displayName || "Trader"}</h2>
-        <p className="text-gray-400 text-sm mb-8">{user?.email}</p>
+        <p className="text-gray-400 text-sm mb-6">{user?.email}</p>
+
+        <button
+          onClick={() => router.push("/onboarding")}
+          className="w-full bg-gradient-to-r from-green-500 to-emerald-400 text-black font-extrabold rounded-xl px-4 py-3 mb-3 hover:brightness-110 transition-all flex items-center justify-center space-x-2 shadow-lg"
+        >
+          <span>★ Start 3-Day Free Trial (Yearly Plan)</span>
+        </button>
 
         <button
           onClick={handleSignOut}
