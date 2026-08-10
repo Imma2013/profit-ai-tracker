@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, googleProvider } from "../../lib/firebase";
+import { auth, googleProvider } from "@/lib/firebase";
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginPage() {
@@ -16,8 +16,8 @@ export default function LoginPage() {
     try {
       await signInWithPopup(auth, googleProvider);
       router.push("/");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Authentication error");
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -30,20 +30,23 @@ export default function LoginPage() {
         await signInWithEmailAndPassword(auth, email, password);
       }
       router.push("/");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Authentication error");
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white px-6 py-12 items-center justify-center">
-      <div className="w-full max-w-sm bg-[#111111] rounded-[40px] border border-gray-800 p-8 shadow-2xl">
-        <h1 className="text-3xl font-bold mb-2 text-center">Alu</h1>
-        <p className="text-gray-400 text-center mb-8">
+    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 px-6 py-12 items-center justify-center font-sans">
+      <div className="w-full max-w-sm bg-white rounded-3xl border-2 border-slate-200 p-8 shadow-2xl">
+        <div className="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-xl mx-auto mb-3 shadow-md">
+          📈
+        </div>
+        <h1 className="text-3xl font-black mb-1 text-center text-slate-900">Profit AI</h1>
+        <p className="text-slate-500 text-center text-sm font-semibold mb-8">
           {isSignUp ? "Create an account" : "Welcome back"}
         </p>
 
-        {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
+        {error && <p className="text-red-600 font-bold text-xs mb-4 text-center bg-red-50 p-2 rounded-xl border border-red-200">{error}</p>}
 
         <form onSubmit={handleEmailAuth} className="space-y-4">
           <div>
@@ -52,7 +55,7 @@ export default function LoginPage() {
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
+              className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3.5 text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-slate-900"
               required
             />
           </div>
@@ -62,27 +65,27 @@ export default function LoginPage() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
+              className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3.5 text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-slate-900"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-white text-black font-semibold rounded-xl px-4 py-3 hover:bg-gray-200 transition-colors"
+            className="w-full bg-slate-900 text-white font-extrabold rounded-2xl px-4 py-4 hover:bg-black transition-colors shadow-lg"
           >
             {isSignUp ? "Sign Up" : "Sign In"}
           </button>
         </form>
 
         <div className="my-6 flex items-center justify-center space-x-2">
-          <div className="h-px bg-gray-800 w-full"></div>
-          <span className="text-gray-500 text-sm">OR</span>
-          <div className="h-px bg-gray-800 w-full"></div>
+          <div className="h-px bg-slate-200 w-full" />
+          <span className="text-slate-400 font-extrabold text-xs uppercase">OR</span>
+          <div className="h-px bg-slate-200 w-full" />
         </div>
 
         <button
           onClick={handleGoogleSignIn}
-          className="w-full bg-[#1a1a1a] border border-gray-800 text-white font-medium rounded-xl px-4 py-3 flex items-center justify-center space-x-3 hover:bg-[#222] transition-colors"
+          className="w-full bg-slate-100 border border-slate-300 text-slate-800 font-bold rounded-2xl px-4 py-3.5 flex items-center justify-center space-x-3 hover:bg-slate-200 transition-colors shadow-sm"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
@@ -106,11 +109,11 @@ export default function LoginPage() {
         </button>
 
         <div className="mt-8 text-center">
-          <p className="text-gray-400 text-sm">
+          <p className="text-slate-500 font-semibold text-xs">
             {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-white hover:underline focus:outline-none"
+              className="text-slate-900 font-black hover:underline focus:outline-none"
             >
               {isSignUp ? "Sign In" : "Sign Up"}
             </button>

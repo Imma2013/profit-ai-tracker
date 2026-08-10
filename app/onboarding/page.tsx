@@ -52,7 +52,6 @@ export default function OnboardingPage() {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser && step === 11) {
-        // Automatically move to paywall once signed in!
         setStep(12);
       }
     });
@@ -149,26 +148,26 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white px-6 py-6 justify-between max-w-md mx-auto relative overflow-hidden font-sans select-none">
+    <div className="flex flex-col min-h-screen bg-white text-slate-900 px-6 py-6 justify-between max-w-md mx-auto relative overflow-hidden font-sans select-none">
       {/* Top Header Navigation (for questions & detail steps) */}
       {step > 0 && step < 11 && step !== 9 && (
         <div className="flex items-center justify-between pt-2 pb-4">
           <button
             onClick={handleBack}
-            className="w-9 h-9 rounded-full bg-[#161616] border border-gray-800 flex items-center justify-center text-gray-300 hover:text-white"
+            className="w-10 h-10 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-slate-700 hover:bg-slate-200 font-bold transition-colors"
           >
             ←
           </button>
           
           {/* Progress bar line */}
-          <div className="flex-1 mx-4 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
+          <div className="flex-1 mx-4 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
             <div
-              className="h-full bg-white transition-all duration-300"
+              className="h-full bg-slate-900 transition-all duration-300 rounded-full"
               style={{ width: `${(step / 11) * 100}%` }}
             />
           </div>
           
-          <div className="w-9" />
+          <div className="w-10" />
         </div>
       )}
 
@@ -179,12 +178,17 @@ export default function OnboardingPage() {
           className="flex-1 flex flex-col items-center justify-center text-center cursor-pointer animate-fadeIn py-12"
         >
           <div className="space-y-4">
-            <h1 className="text-4xl font-extrabold tracking-tight">
+            <div className="w-20 h-20 rounded-3xl bg-slate-900 text-white flex items-center justify-center text-3xl mx-auto shadow-2xl">
+              📈
+            </div>
+            <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-tight">
               Welcome to <br />
-              <span className="text-white">Profit AI!</span>
+              <span className="text-emerald-600">Profit AI</span>
             </h1>
           </div>
-          <p className="text-gray-500 text-xs mt-16 animate-pulse">Tap anywhere to continue</p>
+          <p className="text-slate-400 text-xs font-semibold mt-16 animate-pulse uppercase tracking-widest">
+            Tap anywhere to continue
+          </p>
         </div>
       )}
 
@@ -192,10 +196,10 @@ export default function OnboardingPage() {
       {step === 1 && (
         <div className="flex-1 flex flex-col justify-between my-6 animate-fadeIn">
           <div className="flex-1 flex flex-col justify-center items-start px-2 space-y-6">
-            <div className="w-12 h-12 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-center text-2xl">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border-2 border-emerald-500/30 flex items-center justify-center text-3xl shadow-sm">
               📈
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight leading-tight">
+            <h1 className="text-3xl font-black tracking-tight text-slate-900 leading-tight">
               Your next winning trade starts with a photo.
             </h1>
           </div>
@@ -203,91 +207,96 @@ export default function OnboardingPage() {
           <div className="space-y-4">
             <button
               onClick={handleNext}
-              className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+              className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
             >
               Continue
             </button>
-            <p className="text-center text-[10px] text-gray-600">
+            <p className="text-center text-[11px] text-slate-400 font-medium">
               Privacy Policy | Terms Of Use
             </p>
           </div>
         </div>
       )}
 
-      {/* STEP 2: FEATURE 1 (JUST SNAP A PIC OF YOUR CHART) */}
+      {/* STEP 2: FEATURE 1 (JUST SNAP A PIC OF YOUR CHART) - HIGH VISIBILITY BOLD VIEWFINDER */}
       {step === 2 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4">
-            <h2 className="text-2xl font-extrabold">Just snap a pic of your chart</h2>
+            <h2 className="text-2xl font-black text-slate-900">Just snap a pic of your chart</h2>
             
-            {/* Viewfinder Mockup */}
-            <div className="relative w-full max-w-[260px] aspect-[9/16] bg-[#111111] rounded-[36px] border border-gray-800 flex flex-col items-center justify-center overflow-hidden shadow-2xl my-2">
+            {/* High-Contrast Bold Viewfinder Mockup */}
+            <div className="relative w-full max-w-[270px] aspect-[9/16] bg-slate-950 rounded-[40px] border-4 border-slate-900 flex flex-col items-center justify-center overflow-hidden shadow-2xl my-2">
+              {/* Bold Target Brackets */}
               <div className="absolute inset-0 m-8 border-2 border-white/20 rounded-2xl pointer-events-none flex items-center justify-center">
-                <div className="w-10 h-10 border-t-2 border-l-2 border-white absolute top-0 left-0 -translate-x-1 -translate-y-1 rounded-tl-lg" />
-                <div className="w-10 h-10 border-t-2 border-r-2 border-white absolute top-0 right-0 translate-x-1 -translate-y-1 rounded-tr-lg" />
-                <div className="w-10 h-10 border-b-2 border-l-2 border-white absolute bottom-0 left-0 -translate-x-1 translate-y-1 rounded-bl-lg" />
-                <div className="w-10 h-10 border-b-2 border-r-2 border-white absolute bottom-0 right-0 translate-x-1 translate-y-1 rounded-br-lg" />
+                <div className="w-12 h-12 border-t-4 border-l-4 border-emerald-400 absolute top-0 left-0 -translate-x-1.5 -translate-y-1.5 rounded-tl-xl shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                <div className="w-12 h-12 border-t-4 border-r-4 border-emerald-400 absolute top-0 right-0 translate-x-1.5 -translate-y-1.5 rounded-tr-xl shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                <div className="w-12 h-12 border-b-4 border-l-4 border-emerald-400 absolute bottom-0 left-0 -translate-x-1.5 translate-y-1.5 rounded-bl-xl shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                <div className="w-12 h-12 border-b-4 border-r-4 border-emerald-400 absolute bottom-0 right-0 translate-x-1.5 translate-y-1.5 rounded-br-xl shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
               </div>
-              <div className="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center opacity-80">
-                <div className="w-10 h-10 rounded-full bg-white" />
+              
+              {/* Capture Button */}
+              <div className="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center shadow-lg bg-white/10">
+                <div className="w-12 h-12 rounded-full bg-white shadow-md" />
               </div>
             </div>
           </div>
 
           <button
             onClick={handleNext}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
           >
             Continue
           </button>
         </div>
       )}
 
-      {/* STEP 3: FEATURE 2 (AND GET MONEY MAKING INSIGHTS) */}
+      {/* STEP 3: FEATURE 2 (AND GET MONEY MAKING INSIGHTS) - HIGH VISIBILITY WHITE CARD */}
       {step === 3 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4">
-            <h2 className="text-2xl font-extrabold">And get money making insights</h2>
+            <h2 className="text-2xl font-black text-slate-900">And get money making insights</h2>
             
-            {/* Insights Card Mockup */}
-            <div className="w-full bg-[#111111] rounded-[32px] border border-gray-800 p-5 space-y-4 text-left shadow-2xl">
-              <div className="flex items-center space-x-2 border-b border-gray-800/60 pb-3">
-                <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold">
+            {/* Bold Insights Card Mockup */}
+            <div className="w-full bg-white rounded-[32px] border-2 border-slate-200 p-5 space-y-4 text-left shadow-2xl">
+              <div className="flex items-center space-x-3 border-b border-slate-100 pb-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black text-lg shadow-md">
                   ↗
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm">Profit AI</h3>
-                  <p className="text-[10px] text-gray-400">Bitcoin Analysis</p>
+                  <h3 className="font-black text-base text-slate-900">Profit AI Breakdown</h3>
+                  <p className="text-xs text-slate-500 font-semibold">Bitcoin Chart Analysis</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-[#1a1a1a] p-3 rounded-xl">
-                  <span className="text-gray-500 text-[10px]">Trend</span>
-                  <p className="font-bold text-green-400">↗ Bullish</p>
+              {/* Bold Metrics Grid */}
+              <div className="grid grid-cols-2 gap-2.5 text-xs">
+                <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl">
+                  <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Trend</span>
+                  <p className="font-black text-emerald-600 text-base mt-0.5">↗ Bullish</p>
                 </div>
-                <div className="bg-[#1a1a1a] p-3 rounded-xl">
-                  <span className="text-gray-500 text-[10px]">Signal</span>
-                  <p className="font-bold text-green-400">Buy Entry</p>
+                <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl">
+                  <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Signal</span>
+                  <p className="font-black text-emerald-600 text-base mt-0.5">BUY ENTRY</p>
                 </div>
-                <div className="bg-[#1a1a1a] p-3 rounded-xl">
-                  <span className="text-gray-500 text-[10px]">Risk Level</span>
-                  <p className="font-bold text-yellow-400">Medium</p>
+                <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl">
+                  <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Risk Level</span>
+                  <p className="font-black text-amber-600 text-base mt-0.5">Medium</p>
                 </div>
-                <div className="bg-[#1a1a1a] p-3 rounded-xl">
-                  <span className="text-gray-500 text-[10px]">Volume</span>
-                  <p className="font-bold text-purple-400">High</p>
+                <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl">
+                  <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Volume</span>
+                  <p className="font-black text-purple-600 text-base mt-0.5">High</p>
                 </div>
               </div>
 
-              <div className="bg-[#1a1a1a] p-3 rounded-xl text-xs space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Support Level</span>
-                  <span className="font-bold">$84,000</span>
+              {/* Support & Resistance */}
+              <div className="bg-slate-900 text-white p-4 rounded-2xl text-xs space-y-2 shadow-md">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400 font-semibold">Support Level</span>
+                  <span className="font-black text-emerald-400 text-sm">$84,000</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Resistance Level</span>
-                  <span className="font-bold">$90,500</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400 font-semibold">Resistance Level</span>
+                  <span className="font-black text-purple-300 text-sm">$90,500</span>
                 </div>
               </div>
             </div>
@@ -295,7 +304,7 @@ export default function OnboardingPage() {
 
           <button
             onClick={handleNext}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
           >
             Continue
           </button>
@@ -306,7 +315,7 @@ export default function OnboardingPage() {
       {step === 4 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="space-y-6">
-            <h2 className="text-2xl font-extrabold text-left pt-2">
+            <h2 className="text-2xl font-black text-slate-900 text-left pt-2">
               What's your trading experience?
             </h2>
 
@@ -319,10 +328,10 @@ export default function OnboardingPage() {
                 <button
                   key={opt.val}
                   onClick={() => setExperience(opt.val)}
-                  className={`w-full text-left p-4 rounded-2xl border text-sm font-semibold transition-all ${
+                  className={`w-full text-left p-4 rounded-2xl border-2 text-base font-extrabold transition-all ${
                     experience === opt.val
-                      ? "bg-[#1f1f1f] border-white text-white shadow-lg"
-                      : "bg-[#111111] border-gray-800/80 text-gray-300 hover:border-gray-700"
+                      ? "bg-slate-900 border-slate-900 text-white shadow-xl scale-[1.01]"
+                      : "bg-white border-slate-200 text-slate-700 hover:border-slate-400"
                   }`}
                 >
                   {opt.label}
@@ -333,7 +342,7 @@ export default function OnboardingPage() {
 
           <button
             onClick={handleNext}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
           >
             Continue
           </button>
@@ -344,7 +353,7 @@ export default function OnboardingPage() {
       {step === 5 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="space-y-6">
-            <h2 className="text-2xl font-extrabold text-left pt-2">
+            <h2 className="text-2xl font-black text-slate-900 text-left pt-2">
               Which market do you primarily trade in?
             </h2>
 
@@ -359,10 +368,10 @@ export default function OnboardingPage() {
                 <button
                   key={opt.val}
                   onClick={() => setMarket(opt.val)}
-                  className={`w-full text-left p-4 rounded-2xl border text-sm font-semibold transition-all ${
+                  className={`w-full text-left p-4 rounded-2xl border-2 text-base font-extrabold transition-all ${
                     market === opt.val
-                      ? "bg-[#1f1f1f] border-white text-white shadow-lg"
-                      : "bg-[#111111] border-gray-800/80 text-gray-300 hover:border-gray-700"
+                      ? "bg-slate-900 border-slate-900 text-white shadow-xl scale-[1.01]"
+                      : "bg-white border-slate-200 text-slate-700 hover:border-slate-400"
                   }`}
                 >
                   {opt.label}
@@ -373,7 +382,7 @@ export default function OnboardingPage() {
 
           <button
             onClick={handleNext}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
           >
             Continue
           </button>
@@ -384,7 +393,7 @@ export default function OnboardingPage() {
       {step === 6 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="space-y-6">
-            <h2 className="text-2xl font-extrabold text-left pt-2">
+            <h2 className="text-2xl font-black text-slate-900 text-left pt-2">
               What's your trading style?
             </h2>
 
@@ -399,14 +408,18 @@ export default function OnboardingPage() {
                 <button
                   key={opt.val}
                   onClick={() => setStyle(opt.val)}
-                  className={`w-full text-left p-4 rounded-2xl border transition-all ${
+                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all ${
                     style === opt.val
-                      ? "bg-[#1f1f1f] border-white text-white shadow-lg"
-                      : "bg-[#111111] border-gray-800/80 text-gray-300 hover:border-gray-700"
+                      ? "bg-slate-900 border-slate-900 text-white shadow-xl scale-[1.01]"
+                      : "bg-white border-slate-200 text-slate-700 hover:border-slate-400"
                   }`}
                 >
-                  <p className="font-semibold text-sm">{opt.label}</p>
-                  {opt.sub && <p className="text-[11px] text-gray-500 mt-0.5">{opt.sub}</p>}
+                  <p className="font-extrabold text-base">{opt.label}</p>
+                  {opt.sub && (
+                    <p className={`text-xs mt-0.5 font-medium ${style === opt.val ? "text-slate-300" : "text-slate-500"}`}>
+                      {opt.sub}
+                    </p>
+                  )}
                 </button>
               ))}
             </div>
@@ -414,7 +427,7 @@ export default function OnboardingPage() {
 
           <button
             onClick={handleNext}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
           >
             Continue
           </button>
@@ -425,7 +438,7 @@ export default function OnboardingPage() {
       {step === 7 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="space-y-6">
-            <h2 className="text-2xl font-extrabold text-left pt-2">
+            <h2 className="text-2xl font-black text-slate-900 text-left pt-2">
               How detailed should the analysis be?
             </h2>
 
@@ -438,10 +451,10 @@ export default function OnboardingPage() {
                 <button
                   key={opt.val}
                   onClick={() => setDetailLevel(opt.val)}
-                  className={`w-full text-left p-4 rounded-2xl border text-sm font-semibold transition-all ${
+                  className={`w-full text-left p-4 rounded-2xl border-2 text-base font-extrabold transition-all ${
                     detailLevel === opt.val
-                      ? "bg-[#1f1f1f] border-white text-white shadow-lg"
-                      : "bg-[#111111] border-gray-800/80 text-gray-300 hover:border-gray-700"
+                      ? "bg-slate-900 border-slate-900 text-white shadow-xl scale-[1.01]"
+                      : "bg-white border-slate-200 text-slate-700 hover:border-slate-400"
                   }`}
                 >
                   {opt.label}
@@ -452,63 +465,65 @@ export default function OnboardingPage() {
 
           <button
             onClick={handleNext}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
           >
             Continue
           </button>
         </div>
       )}
 
-      {/* STEP 8: PROFITABILITY PROMISE */}
+      {/* STEP 8: PROFITABILITY PROMISE - BOLD HIGH-VISIBILITY GRAPH THAT POPS OUT */}
       {step === 8 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6">
-            <h2 className="text-2xl font-extrabold px-2">
+            <h2 className="text-2xl font-black text-slate-900 px-2 leading-snug">
               You are just few steps away from becoming a profitable trader
             </h2>
 
-            {/* Profitability Graph Card */}
-            <div className="w-full bg-[#111111] rounded-3xl p-5 border border-gray-800 shadow-2xl space-y-4 text-left">
-              <h3 className="font-bold text-sm">Your Profitability</h3>
+            {/* Bold High-Visibility Profitability Graph Card */}
+            <div className="w-full bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-2xl space-y-4 text-left">
+              <h3 className="font-black text-base text-slate-900">Your Profitability</h3>
               
-              <div className="flex space-x-4 text-[10px]">
-                <div className="flex items-center space-x-1.5">
-                  <div className="w-2 h-2 rounded-full bg-green-500" />
-                  <span className="text-gray-300 font-semibold">Profit AI</span>
+              <div className="flex space-x-5 text-xs font-bold">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-600 shadow-sm" />
+                  <span className="text-slate-900 font-extrabold text-sm">Profit AI</span>
                 </div>
-                <div className="flex items-center space-x-1.5">
-                  <div className="w-2 h-2 rounded-full bg-red-500" />
-                  <span className="text-gray-400">Trading Gurus</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3.5 h-3.5 rounded-full bg-red-600 shadow-sm" />
+                  <span className="text-slate-500 font-bold text-sm">Trading Gurus</span>
                 </div>
               </div>
 
-              {/* SVG Line Graph */}
-              <div className="h-32 w-full relative pt-2">
+              {/* Bold SVG Line Graph with strokeWidth 5 & 4 */}
+              <div className="h-36 w-full relative pt-2">
                 <svg className="w-full h-full overflow-visible" viewBox="0 0 100 50" preserveAspectRatio="none">
                   {/* Grid Lines */}
-                  <line x1="0" y1="25" x2="100" y2="25" stroke="#222" strokeDasharray="2" />
-                  <line x1="0" y1="45" x2="100" y2="45" stroke="#222" />
+                  <line x1="0" y1="25" x2="100" y2="25" stroke="#e2e8f0" strokeDasharray="3" strokeWidth="1.5" />
+                  <line x1="0" y1="45" x2="100" y2="45" stroke="#cbd5e1" strokeWidth="2" />
 
-                  {/* Red Line (Trading Gurus - wavy down) */}
+                  {/* Red Line (Trading Gurus - wavy down) - BOLDER strokeWidth 4 */}
                   <path
-                    d="M 0 30 Q 25 10 50 35 T 100 40"
+                    d="M 0 28 Q 25 10 50 35 T 100 42"
                     fill="none"
-                    stroke="#ef4444"
-                    strokeWidth="2.5"
+                    stroke="#dc2626"
+                    strokeWidth="4"
+                    strokeLinecap="round"
                   />
 
-                  {/* Green Line (Profit AI - upward) */}
+                  {/* Green Line (Profit AI - upward) - THICK BOLD strokeWidth 5 */}
                   <path
-                    d="M 0 35 Q 35 35 65 20 T 100 5"
+                    d="M 0 38 Q 35 38 65 20 T 100 4"
                     fill="none"
-                    stroke="#22c55e"
-                    strokeWidth="3"
+                    stroke="#16a34a"
+                    strokeWidth="5"
+                    strokeLinecap="round"
                   />
-                  <circle cx="100" cy="5" r="3" fill="#22c55e" />
+                  <circle cx="100" cy="4" r="5" fill="#16a34a" className="shadow-lg" />
                 </svg>
               </div>
 
-              <p className="text-center text-[10px] text-gray-500 font-medium">
+              <p className="text-center text-xs text-slate-600 font-bold bg-slate-50 py-2.5 px-3 rounded-xl border border-slate-200">
                 80% of Profit AI users achieve long-term profitability.
               </p>
             </div>
@@ -516,7 +531,7 @@ export default function OnboardingPage() {
 
           <button
             onClick={handleNext}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
           >
             Continue
           </button>
@@ -526,9 +541,9 @@ export default function OnboardingPage() {
       {/* STEP 9: PERSONALIZING LOADER */}
       {step === 9 && (
         <div className="flex-1 flex flex-col items-center justify-center text-center animate-fadeIn my-12">
-          <div className="bg-[#111111] rounded-3xl p-8 border border-gray-800 flex flex-col items-center justify-center space-y-4 shadow-2xl">
-            <div className="w-10 h-10 border-4 border-gray-700 border-t-white rounded-full animate-spin" />
-            <p className="font-semibold text-sm text-gray-200 tracking-wide">
+          <div className="bg-white rounded-3xl p-10 border-2 border-slate-200 flex flex-col items-center justify-center space-y-4 shadow-2xl">
+            <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin" />
+            <p className="font-extrabold text-base text-slate-900 tracking-wide">
               Personalizing Profit AI <span className="animate-pulse">...</span>
             </p>
           </div>
@@ -539,33 +554,41 @@ export default function OnboardingPage() {
       {step === 10 && (
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6">
-            <h2 className="text-3xl font-extrabold px-2">
+            <h2 className="text-3xl font-black text-slate-900 px-2 leading-tight">
               Transform your trading journey!
             </h2>
 
-            <div className="w-full bg-[#111111] rounded-3xl p-6 border border-gray-800 space-y-4 text-left shadow-2xl">
-              <div className="flex items-center space-x-3 text-sm">
-                <span className="text-xl">📸</span>
-                <span className="font-semibold">Snap & Analyze Instantly</span>
+            <div className="w-full bg-white rounded-3xl p-6 border-2 border-slate-200 space-y-4 text-left shadow-2xl">
+              <div className="flex items-center space-x-3 text-base">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-xl flex-shrink-0">
+                  📸
+                </div>
+                <span className="font-extrabold text-slate-900">Snap & Analyze Instantly</span>
               </div>
-              <div className="flex items-center space-x-3 text-sm">
-                <span className="text-xl">📈</span>
-                <span className="font-semibold">Understand Key Market Trends</span>
+              <div className="flex items-center space-x-3 text-base">
+                <div className="w-10 h-10 rounded-2xl bg-blue-100 border border-blue-300 flex items-center justify-center text-xl flex-shrink-0">
+                  📈
+                </div>
+                <span className="font-extrabold text-slate-900">Understand Key Market Trends</span>
               </div>
-              <div className="flex items-center space-x-3 text-sm">
-                <span className="text-xl">💡</span>
-                <span className="font-semibold">Get Actionable Insights</span>
+              <div className="flex items-center space-x-3 text-base">
+                <div className="w-10 h-10 rounded-2xl bg-purple-100 border border-purple-300 flex items-center justify-center text-xl flex-shrink-0">
+                  💡
+                </div>
+                <span className="font-extrabold text-slate-900">Get Actionable Insights</span>
               </div>
-              <div className="flex items-center space-x-3 text-sm">
-                <span className="text-xl">⭐</span>
-                <span className="font-semibold">Start Trading Like a Pro</span>
+              <div className="flex items-center space-x-3 text-base">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-xl flex-shrink-0">
+                  ⭐
+                </div>
+                <span className="font-extrabold text-slate-900">Start Trading Like a Pro</span>
               </div>
             </div>
           </div>
 
           <button
             onClick={handleNext}
-            className="w-full bg-white text-black font-bold py-4 rounded-2xl text-lg hover:bg-gray-200 transition-colors shadow-lg"
+            className="w-full bg-slate-900 text-white font-extrabold py-4 rounded-2xl text-lg hover:bg-black transition-all shadow-xl hover:scale-[1.01]"
           >
             Continue
           </button>
@@ -577,14 +600,14 @@ export default function OnboardingPage() {
         <div className="flex-1 flex flex-col justify-between my-6 animate-fadeIn">
           <div className="flex-1 flex flex-col justify-center space-y-6">
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold">Create your Account</h2>
-              <p className="text-gray-400 text-sm">
+              <h2 className="text-3xl font-black text-slate-900">Create your Account</h2>
+              <p className="text-slate-500 text-sm font-medium">
                 Sign in first to save your chart analyses & start your free trial
               </p>
             </div>
 
             {authError && (
-              <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl text-center">
+              <div className="bg-red-50 border border-red-200 text-red-600 text-xs p-3 rounded-xl text-center font-bold">
                 {authError}
               </div>
             )}
@@ -592,7 +615,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleGoogleSignIn}
               disabled={authLoading}
-              className="w-full bg-[#1a1a1a] border border-gray-800 text-white font-medium rounded-xl px-4 py-3.5 flex items-center justify-center space-x-3 hover:bg-[#222] transition-colors"
+              className="w-full bg-slate-900 text-white font-bold rounded-2xl px-4 py-4 flex items-center justify-center space-x-3 hover:bg-black transition-colors shadow-lg"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -616,9 +639,9 @@ export default function OnboardingPage() {
             </button>
 
             <div className="flex items-center justify-center space-x-2 my-2">
-              <div className="h-px bg-gray-800 flex-1" />
-              <span className="text-gray-500 text-xs uppercase">Or with email</span>
-              <div className="h-px bg-gray-800 flex-1" />
+              <div className="h-px bg-slate-200 flex-1" />
+              <span className="text-slate-400 text-xs font-bold uppercase">Or with email</span>
+              <div className="h-px bg-slate-200 flex-1" />
             </div>
 
             <form onSubmit={handleEmailAuth} className="space-y-3">
@@ -627,7 +650,7 @@ export default function OnboardingPage() {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#111111] border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
+                className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3.5 text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-slate-900"
                 required
               />
               <input
@@ -635,24 +658,24 @@ export default function OnboardingPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#111111] border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
+                className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3.5 text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-slate-900"
                 required
               />
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full bg-white text-black font-semibold rounded-xl px-4 py-3 hover:bg-gray-200 transition-colors"
+                className="w-full bg-slate-900 text-white font-extrabold rounded-2xl px-4 py-4 hover:bg-black transition-colors shadow-lg"
               >
                 {authLoading ? "Processing..." : isSignUp ? "Sign Up & Continue" : "Sign In & Continue"}
               </button>
             </form>
 
             <div className="text-center pt-2">
-              <p className="text-gray-400 text-xs">
+              <p className="text-slate-500 text-xs font-semibold">
                 {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
                 <button
                   onClick={() => setIsSignUp(!isSignUp)}
-                  className="text-white font-medium hover:underline focus:outline-none"
+                  className="text-slate-900 font-extrabold hover:underline focus:outline-none"
                 >
                   {isSignUp ? "Sign In" : "Sign Up"}
                 </button>
@@ -667,11 +690,11 @@ export default function OnboardingPage() {
         <div className="flex-1 flex flex-col justify-between my-4 animate-fadeIn">
           <div className="space-y-6">
             <div className="text-center space-y-2 pt-2">
-              <div className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-xs font-bold uppercase tracking-wider mb-1">
+              <div className="inline-block px-3 py-1 bg-emerald-100 border border-emerald-300 rounded-full text-emerald-800 text-xs font-black uppercase tracking-wider mb-1">
                 Unlock Full Access
               </div>
-              <h2 className="text-3xl font-extrabold">Choose Your Plan</h2>
-              <p className="text-gray-400 text-xs">
+              <h2 className="text-3xl font-black text-slate-900">Choose Your Plan</h2>
+              <p className="text-slate-500 text-xs font-semibold">
                 Cancel anytime. No commitment.
               </p>
             </div>
@@ -683,27 +706,35 @@ export default function OnboardingPage() {
                 onClick={() => setSelectedPlan("yearly")}
                 className={`relative rounded-3xl p-5 border-2 cursor-pointer transition-all ${
                   selectedPlan === "yearly"
-                    ? "bg-gradient-to-b from-[#18261e] to-[#0f1712] border-green-500 shadow-[0_0_35px_rgba(34,197,94,0.25)]"
-                    : "bg-[#111111] border-gray-800 hover:border-gray-700"
+                    ? "bg-slate-900 border-slate-900 text-white shadow-2xl scale-[1.01]"
+                    : "bg-white border-slate-200 text-slate-900 hover:border-slate-400"
                 }`}
               >
                 {/* 3-Day Free Trial Badge */}
-                <div className="absolute -top-3.5 right-4 bg-gradient-to-r from-green-500 to-emerald-400 text-black text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                <div className="absolute -top-3.5 right-4 bg-emerald-500 text-white text-[11px] font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md">
                   ★ 3-DAY FREE TRIAL
                 </div>
 
-                <div className="flex justify-between items-start mb-2">
+                <div className="flex justify-between items-start mb-2 pt-1">
                   <div>
-                    <h3 className="font-bold text-lg text-white">Yearly Plan</h3>
-                    <p className="text-green-400 text-xs font-semibold">3 Days Free, then $29.99/year</p>
+                    <h3 className={`font-black text-lg ${selectedPlan === "yearly" ? "text-white" : "text-slate-900"}`}>
+                      Yearly Plan
+                    </h3>
+                    <p className={`text-xs font-bold ${selectedPlan === "yearly" ? "text-emerald-400" : "text-emerald-600"}`}>
+                      3 Days Free, then $29.99/year
+                    </p>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-extrabold text-white">$2.49</span>
-                    <span className="text-xs text-gray-400"> /mo</span>
+                    <span className={`text-2xl font-black ${selectedPlan === "yearly" ? "text-white" : "text-slate-900"}`}>
+                      $2.49
+                    </span>
+                    <span className={`text-xs font-bold ${selectedPlan === "yearly" ? "text-slate-400" : "text-slate-500"}`}>
+                      {" "}/mo
+                    </span>
                   </div>
                 </div>
 
-                <p className="text-gray-400 text-xs">
+                <p className={`text-xs font-medium ${selectedPlan === "yearly" ? "text-slate-300" : "text-slate-500"}`}>
                   Billed annually ($29.99/yr) after 3 days. Save 70% compared to weekly.
                 </p>
               </div>
@@ -713,35 +744,43 @@ export default function OnboardingPage() {
                 onClick={() => setSelectedPlan("weekly")}
                 className={`rounded-3xl p-5 border-2 cursor-pointer transition-all ${
                   selectedPlan === "weekly"
-                    ? "bg-gradient-to-b from-[#1c1c1c] to-[#121212] border-gray-400"
-                    : "bg-[#111111] border-gray-800 hover:border-gray-700"
+                    ? "bg-slate-900 border-slate-900 text-white shadow-2xl scale-[1.01]"
+                    : "bg-white border-slate-200 text-slate-900 hover:border-slate-400"
                 }`}
               >
                 <div className="flex justify-between items-start mb-1">
                   <div>
-                    <h3 className="font-bold text-lg text-white">Weekly Plan</h3>
-                    <p className="text-gray-400 text-xs">Standard weekly access</p>
+                    <h3 className={`font-black text-lg ${selectedPlan === "weekly" ? "text-white" : "text-slate-900"}`}>
+                      Weekly Plan
+                    </h3>
+                    <p className={`text-xs font-medium ${selectedPlan === "weekly" ? "text-slate-300" : "text-slate-500"}`}>
+                      Standard weekly access
+                    </p>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-extrabold text-white">$7.99</span>
-                    <span className="text-xs text-gray-400"> /wk</span>
+                    <span className={`text-2xl font-black ${selectedPlan === "weekly" ? "text-white" : "text-slate-900"}`}>
+                      $7.99
+                    </span>
+                    <span className={`text-xs font-bold ${selectedPlan === "weekly" ? "text-slate-400" : "text-slate-500"}`}>
+                      {" "}/wk
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Feature Highlights */}
-            <div className="bg-[#111111] rounded-2xl p-4 border border-gray-800/80 space-y-2 text-xs text-gray-300">
+            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2 text-xs font-bold text-slate-700">
               <div className="flex items-center space-x-2">
-                <span className="text-green-400 font-bold">⚡</span>
+                <span className="text-emerald-600 font-extrabold text-sm">✓</span>
                 <span>Unlimited AI Chart Analyses & Signals</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-green-400 font-bold">⚡</span>
+                <span className="text-emerald-600 font-extrabold text-sm">✓</span>
                 <span>Real-time Support & Resistance Target Mapping</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-green-400 font-bold">⚡</span>
+                <span className="text-emerald-600 font-extrabold text-sm">✓</span>
                 <span>Complete Trade Game Plan & Risk Assessment</span>
               </div>
             </div>
@@ -751,7 +790,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleSubscribe}
               disabled={checkoutLoading}
-              className="w-full bg-gradient-to-r from-green-400 to-emerald-500 text-black font-extrabold py-4 rounded-2xl text-lg hover:brightness-110 transition-all shadow-[0_0_30px_rgba(34,197,94,0.3)] flex items-center justify-center space-x-2"
+              className="w-full bg-emerald-600 text-white font-black py-4 rounded-2xl text-lg hover:bg-emerald-700 transition-all shadow-xl hover:scale-[1.01] flex items-center justify-center space-x-2"
             >
               {checkoutLoading ? (
                 <span>Redirecting to Checkout...</span>
