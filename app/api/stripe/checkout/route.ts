@@ -18,14 +18,14 @@ export async function POST(req: Request) {
           price_data: {
             currency: "usd",
             product_data: {
-              name: isYearly ? "Profit AI Pro (Yearly - 3 Day Free Trial)" : "Profit AI Pro (Weekly)",
+              name: isYearly ? "Profit AI Pro (Yearly - 3 Day Free Trial)" : "Profit AI Pro (Monthly)",
               description: isYearly
                 ? "Full access to AI Trading Chart Analysis ($29.99/yr after 3-day free trial)"
-                : "Full access to AI Trading Chart Analysis ($7.99/week)",
+                : "Full access to AI Trading Chart Analysis ($9.99/month)",
             },
-            unit_amount: isYearly ? 2999 : 799, // $29.99/yr or $7.99/wk
+            unit_amount: isYearly ? 2999 : 999, // $29.99/yr or $9.99/mo
             recurring: {
-              interval: isYearly ? ("year" as const) : ("week" as const),
+              interval: isYearly ? ("year" as const) : ("month" as const),
             },
           },
           quantity: 1,

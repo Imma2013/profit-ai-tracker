@@ -27,7 +27,7 @@ export default function OnboardingPage() {
   // 9: Personalizing Loader ("Personalizing Profit AI...")
   // 10: Transform Summary ("Transform your trading journey!")
   // 11: Sign In / Account Creation
-  // 12: Enforced Payment Paywall ($29.99/yr 3-day trial & $7.99/wk)
+  // 12: Enforced Payment Paywall ($29.99/yr 3-day trial & $9.99/mo)
   const [step, setStep] = useState<number>(0);
 
   // User selections
@@ -45,7 +45,7 @@ export default function OnboardingPage() {
   const [authLoading, setAuthLoading] = useState(false);
 
   // Paywall plan selection ('yearly' has 3-day trial)
-  const [selectedPlan, setSelectedPlan] = useState<"yearly" | "weekly">("yearly");
+  const [selectedPlan, setSelectedPlan] = useState<"yearly" | "monthly">("yearly");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   useEffect(() => {
@@ -735,34 +735,34 @@ export default function OnboardingPage() {
                 </div>
 
                 <p className={`text-xs font-medium ${selectedPlan === "yearly" ? "text-slate-300" : "text-slate-500"}`}>
-                  Billed annually ($29.99/yr) after 3 days. Save 70% compared to weekly.
+                  Billed annually ($29.99/yr) after 3 days. Save 75% compared to monthly.
                 </p>
               </div>
 
-              {/* Weekly Plan: $7.99/wk */}
+              {/* Monthly Plan: $9.99/mo */}
               <div
-                onClick={() => setSelectedPlan("weekly")}
+                onClick={() => setSelectedPlan("monthly")}
                 className={`rounded-3xl p-5 border-2 cursor-pointer transition-all ${
-                  selectedPlan === "weekly"
+                  selectedPlan === "monthly"
                     ? "bg-slate-900 border-slate-900 text-white shadow-2xl scale-[1.01]"
                     : "bg-white border-slate-200 text-slate-900 hover:border-slate-400"
                 }`}
               >
                 <div className="flex justify-between items-start mb-1">
                   <div>
-                    <h3 className={`font-black text-lg ${selectedPlan === "weekly" ? "text-white" : "text-slate-900"}`}>
-                      Weekly Plan
+                    <h3 className={`font-black text-lg ${selectedPlan === "monthly" ? "text-white" : "text-slate-900"}`}>
+                      Monthly Plan
                     </h3>
-                    <p className={`text-xs font-medium ${selectedPlan === "weekly" ? "text-slate-300" : "text-slate-500"}`}>
-                      Standard weekly access
+                    <p className={`text-xs font-medium ${selectedPlan === "monthly" ? "text-slate-300" : "text-slate-500"}`}>
+                      Standard monthly access
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className={`text-2xl font-black ${selectedPlan === "weekly" ? "text-white" : "text-slate-900"}`}>
-                      $7.99
+                    <span className={`text-2xl font-black ${selectedPlan === "monthly" ? "text-white" : "text-slate-900"}`}>
+                      $9.99
                     </span>
-                    <span className={`text-xs font-bold ${selectedPlan === "weekly" ? "text-slate-400" : "text-slate-500"}`}>
-                      {" "}/wk
+                    <span className={`text-xs font-bold ${selectedPlan === "monthly" ? "text-slate-400" : "text-slate-500"}`}>
+                      {" "}/mo
                     </span>
                   </div>
                 </div>
@@ -797,7 +797,7 @@ export default function OnboardingPage() {
               ) : selectedPlan === "yearly" ? (
                 <span>START 3-DAY FREE TRIAL</span>
               ) : (
-                <span>Subscribe Weekly ($7.99)</span>
+                <span>Subscribe Monthly ($9.99)</span>
               )}
             </button>
           </div>
