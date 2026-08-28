@@ -1,10 +1,22 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
+import { verifyFirebaseBearer } from "@/lib/server-auth";
+import { hasPaidAccess } from "@/lib/subscription";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
+    const user = await verifyFirebaseBearer(req);
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+
+    const entitled = await hasPaidAccess(user.uid, user.email);
+    if (!entitled) {
+      return NextResponse.json({ error: "Active subscription or trial required" }, { status: 403 });
+    }
+
     const body = await req.json();
     const { imageBase64 } = body;
 
@@ -12,10 +24,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No image provided" }, { status: 400 });
     }
 
-    // Initialize the model
     const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
-    // Construct the prompt
     const prompt = `Analyze this trading chart. Act as an expert crypto/stock trader.
     Return ONLY a JSON object with the following structure, and no other markdown or text:
     {
@@ -33,8 +43,6 @@ export async function POST(req: Request) {
       "recognizedPatterns": "Any chart patterns recognized (e.g., Head and Shoulders)."
     }`;
 
-    // Convert base64 to generative part
-    // Assumes base64 string doesn't have the data:image/jpeg;base64, prefix or strips it
     const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
 
     const imageParts = [
@@ -48,9 +56,7 @@ export async function POST(req: Request) {
 
     const result = await model.generateContent([prompt, ...imageParts]);
     const responseText = result.response.text();
-    
-    // Parse JSON
-    const cleanJson = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const cleanJson = responseText.replace(/```json/gi, "").replace(/```/g, "").trim();
     const data = JSON.parse(cleanJson);
 
     return NextResponse.json(data);
