@@ -33,7 +33,7 @@ export function usePaidAccess() {
         if (!response.ok) {
           setAllowed(false);
           setLoading(false);
-          router.replace("/onboarding?paywall=1");
+          router.replace("/paywall");
           return;
         }
 
@@ -43,12 +43,12 @@ export function usePaidAccess() {
         setLoading(false);
 
         if (!entitled) {
-          router.replace("/onboarding?paywall=1");
+          router.replace("/paywall");
         }
       } catch {
         setAllowed(false);
         setLoading(false);
-        router.replace("/onboarding?paywall=1");
+        router.replace("/paywall");
       }
     });
 
