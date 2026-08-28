@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2023-10-16" as any,
-});
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) return null;
+
+  return new Stripe(key, {
+    apiVersion: "2023-10-16" as any,
+  });
+}
 
 export async function POST(req: Request) {
   try {
+    const stripe = getStripe();
+    if (!stripe) {
+      return NextResponse.json({ error: "Stripe is not configured" }, { status: 500 });
+    }
+
     const { priceId, planType, userId, userEmail } = await req.json();
 
     if (!userId || userId === "anonymous" || !userEmail) {
@@ -48,7 +58,7 @@ export async function POST(req: Request) {
       metadata: { firebaseUid: userId },
       client_reference_id: userId,
       success_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/?payment=success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/onboarding?payment=cancelled`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/paywall?payment=cancelled`,
     });
 
     return NextResponse.json({ url: session.url });
